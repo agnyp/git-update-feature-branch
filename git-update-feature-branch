@@ -25,6 +25,7 @@ EOS
 # Defining methods
 # ----------------------------------------------------------------------------------
 
+
 def checkout_branch(branch)
   `git checkout #{branch}`;err=$?.success?
   if !err
@@ -33,10 +34,36 @@ def checkout_branch(branch)
   end
 end
 
-def exec_git(command, error_text = "Error ...")
+class FileTools
+  def file_name
+    git_dir=`git rev-parse --show-toplevel`
+    file_name= "#{git_dir.strip}/.git/.update-fb-step"
+    puts file_name
+    file_name
+  end
+
+
+  def write_step_to_file(step)
+    file = File.new(file_name, "w")
+    file.write(step);
+  end
+
+  def get_step_from_file
+    if File.exists?(file_name)
+      file = File.open(file_name) 
+      file.read 
+    else
+      0
+    end
+  end
+end
+def exec_git(command, error_text = "Error ...", step = 0, how_to_continue_text = "")
   out=`#{command}`;!suc=$?.success?
   unless suc
     puts error_text
+    if step > 0
+      puts how_to_continue_text 
+    end
     exit 1
   end
   out
@@ -44,6 +71,8 @@ end
 
 # ----------------------------------------------------------------------------------
 
+write_step_to_file 0
+exit
 
 # Checking for illegal args
 if ARGV.empty? or ARGV.delete("--help") or ARGV.delete("-h")
@@ -82,11 +111,31 @@ if out.length > 0
   exit 1
 end unless !suc
 
-# 1. Step - checkout master and get latest version
-puts "Pulling master and rebasing your feature-branch..."
-checkout_branch "master"
-exec_git "git fetch","Could not fetch."
-exec_git "git pull origin master", "Could not pull master"
+class Steps
+  steps = [
+    :rebase_lokal_with_master
+  ]
+
+  def run(step)
+    steps.each { |e, i| 
+      send steps[step] unless i < step
+    }
+  end
+
+  # 1. Step - checkout master and get latest version
+  def rebase_lokal_with_master(step)
+    puts "sended. step: #{step}"
+    exit
+    puts "Pulling master and rebasing your feature-branch..."
+    checkout_branch "master"
+    exec_git "git fetch","Could not fetch."
+    exec_git "git pull origin master", "Could not pull master", step, "Please fix problems (e.g. conflicts) with pull master.\nAfter resolving run git update-feature-branch --continue"
+  end
+end
+
+steps = new Steps
+steps.run(0)
+
 
 checkout_branch branch
 exec_git "git rebase master", "Rebasing your bransch \'#{branch}\' with master failed. Could not update your work."
