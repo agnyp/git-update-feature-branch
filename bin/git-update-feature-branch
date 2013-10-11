@@ -21,28 +21,7 @@ Second it rebases your branch with the local copy and deletes the copy.
 Thank you, for using Gnyp-Soft.
 EOS
 
-# ----------------------------------------------------------------------------------
-# Defining methods
-# ----------------------------------------------------------------------------------
-
-def checkout_branch(branch)
-  `git checkout #{branch}`;err=$?.success?
-  if !err
-    puts "branch not known. aborting ..."
-    exit 1
-  end
-end
-
-def exec_git(command, error_text = "Error ...")
-  out=`#{command}`;!suc=$?.success?
-  unless suc
-    puts error_text
-    exit 1
-  end
-  out
-end
-
-# ----------------------------------------------------------------------------------
+require 'git_update_feature_branch'
 
 
 # Checking for illegal args
@@ -53,6 +32,10 @@ end
 
 ARGV.each { |a| abort "Error: unknown argument #{a}." if a =~ /^--/ }
 
+base = Base.new
+base.run
+
+=begin
 branch = nil
 origin_branch=nil
 ARGV.each_with_index { |a, i| 
@@ -108,4 +91,4 @@ exec_git "git branch -D #{updated_origin_branch}","Step 3 - Could not delete tem
 puts
 puts "Successfully updated your feature-branch '#{branch}'."
 exit 0
-
+=end
