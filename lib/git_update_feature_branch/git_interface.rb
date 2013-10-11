@@ -1,4 +1,5 @@
 module GitInterface
+
   def checkout_branch(branch)
     `git checkout #{branch}`;err=$?.success?
     if !err
@@ -15,4 +16,5 @@ module GitInterface
     end
     out
   end
+
 end
