@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = GitUpdateFeatureBranch::VERSION
   spec.authors       = ["Andreas Gnyp"]
   spec.email         = ["agnyp@friendscout24.de"]
-  spec.description   = %q{TODO: Write a gem description}
+  spec.description   = %q{This gem will update your feature branch with master as well as with the work of your colleagues. You can work on the same branch. Updating will use rebasing, so your history will always be nice and clean.}
   spec.summary       = %q{Updates a feature-branch with master and collaborators using rebasing.}
   spec.homepage      = ""
   spec.license       = "MIT"
