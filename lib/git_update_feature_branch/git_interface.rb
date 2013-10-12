@@ -1,11 +1,7 @@
 module GitInterface
 
   def checkout_branch(branch)
-    `git checkout #{branch}`;err=$?.success?
-    if !err
-      puts "branch not known. aborting ..."
-      exit 1
-    end
+    exec_git "git checkout #{branch}", "#{branch} not known. aborting ..."
   end
 
   def exec_git(command, error_text = "Error ...")
