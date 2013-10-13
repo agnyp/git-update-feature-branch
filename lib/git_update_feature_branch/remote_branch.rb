@@ -5,12 +5,6 @@ class RemoteBranch
 
     extend GitInterface
 
-    def list_remote_branches
-      exec_git "git fetch", "Could not fetch. Aborting..."
-      remote_branches = exec_git "git branch -r", "Cannot find remote branches. Aborting..."
-      remote_branches = find_branches remote_branches
-    end
-
     def latest_remote_branch
       branches = list_remote_branches 
       return branches if branches.size <= 1
@@ -26,9 +20,28 @@ class RemoteBranch
       [branches[highest]]
     end
 
+    def list_remote_branches
+      exec_git "fetch", "Could not fetch. Aborting..."
+      remote_branches = exec_git "branch -r", "Cannot find remote branches. Aborting..."
+      remote_branches = find_branches remote_branches
+    end
+
+    def push_branch(nr)
+      response = exec_git! "push origin feature-branch:fb__feature-branch__#{nr} --porcelain"
+      response_arr = response.split(/\n/) 
+      response_line = response_arr.find_index{ |line|
+        line.match(/refs\/heads\/#{$branch}:/)
+      }
+      if response_line.nil? 
+        raise "Did not find pushed branch. Worse!"
+      end
+      response_arr[response_line].split(/\s+/).first
+    end
+
     def delete_updated
     end
 
+    # Helper-functions
     def strip_branches(branches)
       branches.split(/\n/).map{ |item|
         item.gsub(/\s+/,'') 
