@@ -14,10 +14,13 @@ class RemoteBranch
     def latest_remote_branch
       branches = list_remote_branches 
       return branches if branches.size <= 1
-      highest = -1
+      highest = 0
+      max = -1
       branches.each_with_index{ |br, ind|
-        if br.split('__').last.to_i > highest
+        br0 = br.split('__').last.to_i
+        if br0 > max
           highest = ind
+          max = br0
         end
       }
       [branches[highest]]

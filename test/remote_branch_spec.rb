@@ -1,6 +1,5 @@
 require 'git_update_feature_branch/remote_branch'
 
-
 describe RemoteBranch do
 
   before :all do
@@ -37,11 +36,11 @@ BR
     @random_fbs = <<BR
   origin/HEAD -> origin/master
   origin/fb__feature-branch__154
-  origin/fb__feature-branch__153
   origin/continue
+  origin/fb__feature-branch__156
   origin/fb__feature-branch__0
   origin/master
-  origin/fb__feature-branch__156
+  origin/fb__feature-branch__153
 BR
 
   end
