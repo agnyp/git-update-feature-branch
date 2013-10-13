@@ -224,7 +224,28 @@ EOS
       it 'should raise an error' do
         expect {RemoteBranch.push_branch(1)}.to raise_error(RuntimeError)
       end
-      
+    end
+
+  end
+
+  context '#delete_branch' do
+    before :all do
+      @deleted_branch = <<EOS
+To git@github.com:agnyp/git-update-feature-branch.git
+- :refs/heads/as-gem__1 [deleted]
+Done
+EOS
+    end
+    context 'deleted successfully' do
+      it 'should return -'
+    end
+
+    context 'could not delete' do
+      it 'should raise Exception'
+    end
+
+    context 'found nothing to delete' do
+      it 'should be happy with it'
     end
 
   end
