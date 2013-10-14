@@ -230,22 +230,46 @@ EOS
 
   context '#delete_branch' do
     before :all do
+      @deleted_broken_branch = <<EOS
+error: unable to push to unqualified destination: fb__feature-branch__0
+The destination refspec neither matches an existing ref on the remote nor
+begins with refs/, and we are unable to guess a prefix based on the source ref.
+error: failed to push some refs to 'git@github.com:agnyp/git-update-feature-branch.git'
+EOS
       @deleted_branch = <<EOS
 To git@github.com:agnyp/git-update-feature-branch.git
-- :refs/heads/as-gem__1 [deleted]
+- :refs/heads/fb__feature-branch__0 [deleted]
 Done
 EOS
     end
     context 'deleted successfully' do
-      it 'should return -'
+      before do
+        RemoteBranch.stub(:exec_git!).with("push origin :fb__feature-branch__0 --porcelain").and_return(@deleted_branch)
+      end
+      subject{RemoteBranch.delete_branch(0)}
+      it 'should return -' do
+        subject.should eql('-')
+      end
+
     end
 
-    context 'could not delete' do
-      it 'should raise Exception'
+    context 'could not delete because it does not exist' do
+      before do
+        RemoteBranch.stub(:exec_git!).with("push origin :fb__feature-branch__0 --porcelain").and_return(@deleted_broken_branch)
+      end
+      it 'should raise Exception' do
+        expect {RemoteBranch.delete_branch(0)}.to raise_error(DeleteBranchError)
+      end
     end
 
-    context 'found nothing to delete' do
-      it 'should be happy with it'
+    context 'could not delete because of an error' do
+      before do
+        RemoteBranch.stub(:exec_git!).with("push origin :fb__feature-branch__0 --porcelain").and_return(@deleted_branch)
+        $?.stub(:success?).and_return(false)
+      end
+      it 'should raise Exception -> but it is basically fine' do
+        expect {RemoteBranch.delete_branch(0)}.to raise_error(DeleteBranchError)
+      end
     end
 
   end

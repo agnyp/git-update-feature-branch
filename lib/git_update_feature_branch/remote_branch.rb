@@ -1,5 +1,7 @@
 require 'git_update_feature_branch/git_interface'
 
+class DeleteBranchError < RuntimeError ; end
+
 class RemoteBranch
   class << self
 
@@ -27,7 +29,7 @@ class RemoteBranch
     end
 
     def push_branch(nr)
-      response = exec_git! "push origin feature-branch:fb__feature-branch__#{nr} --porcelain"
+      response = exec_git! "push origin #{$branch}:fb__#{$branch}__#{nr} --porcelain"
       response_arr = response.split(/\n/) 
       response_line = response_arr.find_index{ |line|
         line.match(/refs\/heads\/#{$branch}:/)
@@ -38,10 +40,20 @@ class RemoteBranch
       response_arr[response_line].split(/\s+/).first
     end
 
-    def delete_updated
+    def delete_branch(nr)
+      response = exec_git! "push origin :fb__#{$branch}__#{nr} --porcelain"
+      response_arr = response.split(/\n/) 
+      response_line = response_arr.find_index{ |line|
+        line.match(/:refs\/heads\/fb__#{$branch}__#{nr}/)
+      }
+      if response_line.nil? or !$?.success?
+        raise DeleteBranchError, "Problem with deleting branch ... but is most likely perfectly fine, though!"
+      end
+      response_arr[response_line].split(/\s+/).first
     end
 
     # Helper-functions
+
     def strip_branches(branches)
       branches.split(/\n/).map{ |item|
         item.gsub(/\s+/,'') 
