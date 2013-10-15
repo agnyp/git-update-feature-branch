@@ -39,17 +39,17 @@ module RemoteBranch
       response_arr[response_line].split(/\s+/).first
   end
 
-  def delete_branch(nr)
-    response = exec_git! "push origin :fb__#{$branch}__#{nr} --porcelain"
-    response_arr = response.lines.to_a
-    response_line = response_arr.find_index{ |line|
-      line.match(/:refs\/heads\/fb__#{$branch}__#{nr}/)
-    }
-    if response_line.nil? or !$?.success?
-      raise DeleteBranchError, "Problem with deleting branch ... but is most likely perfectly fine, though!"
+    def delete_branch(nr)
+      response = exec_git! "push origin :fb__#{$branch}__#{nr} --porcelain"
+      response_arr = response.lines.to_a
+      response_line = response_arr.find_index{ |line|
+        line.match(/:refs\/heads\/fb__#{$branch}__#{nr}/)
+      }
+      if response_line.nil? or !$?.success?
+        raise DeleteBranchError, "Problem with deleting branch ... but is most likely perfectly fine, though!"
+      end
+      response_arr[response_line].split(/\s+/).first
     end
-    response_arr[response_line].split(/\s+/).first
-  end
 
   # Helper-functions
 
