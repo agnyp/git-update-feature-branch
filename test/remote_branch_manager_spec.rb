@@ -1,6 +1,9 @@
 require 'git_update_feature_branch/remote_branch_manager'
 
 describe RemoteBranchManager do
+  before :each do
+    @manager = RemoteBranchManager.new
+  end
   
   context '#push_branch' do
 
