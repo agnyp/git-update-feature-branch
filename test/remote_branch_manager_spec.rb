@@ -12,17 +12,21 @@ describe RemoteBranchManager do
     end
 
     context 'new branch is not highest branch' do
-      it 'should raise NewerBranchException'
+      context 'checked before push' do
+        it 'should raise NewerBranchException and update again with the highest branch'
+      end
+      context 'received error attempting to push' do
+        it 'should raise NewerBranchException and update again with the highest branch'
+      end
     end
+
+    context 'after pushing: Check for higher branch -> there is one!' do
+      it 'should raise NewerBranchException and update again with the highest branch'
+    end 
 
     context 'after pushing: Check for higher branch -> there is none' do
       it 'should return all good'
     end 
 
-    context 'after pushing: Check for higher branch -> there is one!' do
-      it 'should raise NewerBranchException'
-    end 
-
   end
-
 end
