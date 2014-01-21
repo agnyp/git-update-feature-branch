@@ -1,6 +1,6 @@
 require 'git_update_feature_branch/remote_branch'
 
-class ModuleWrapper
+class ModuleWrapperForRemoteBranch
   include RemoteBranch
 end
 
@@ -51,7 +51,7 @@ BR
   before :each do
     $origin = 'origin'
     $branch = "feature-branch"
-    @brancher = ModuleWrapper.new
+    @brancher = ModuleWrapperForRemoteBranch.new
   end
 
   context '#list_remote_branches:' do
