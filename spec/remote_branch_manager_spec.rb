@@ -8,7 +8,12 @@ describe RemoteBranchManager do
   context '#push_branch' do
 
     context 'new branch is highest branch' do
-      it 'should push branch' 
+      context 'checked before push' do
+        it 'should push branch' 
+      end
+      context 'received error attempting to push' do
+        it 'should raise NewerBranchException and update again with the highest branch'
+      end
     end
 
     context 'new branch is not highest branch' do
