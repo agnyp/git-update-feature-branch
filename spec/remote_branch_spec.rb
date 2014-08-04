@@ -59,48 +59,48 @@ BR
     context 'no remote branch' do
       before do
         $branch = "notInThere"
-        @brancher.stub(:exec_git).with("fetch", kind_of(String))
-        @brancher.stub(:exec_git).with("branch -r", kind_of(String)).and_return(@casual_branches)
+        allow(@brancher).to receive(:exec_git).with("fetch", kind_of(String))
+        allow(@brancher).to receive(:exec_git).with("branch -r", kind_of(String)).and_return(@casual_branches)
       end
       subject {@brancher.list_remote_branches}
       it 'should show an empty array' do
-        subject.should be_empty
+        expect(subject).to be_empty
       end
     end
 
     context 'one correct remote branch' do
       before do
-        @brancher.stub(:exec_git).with("fetch", kind_of(String))
-        @brancher.stub(:exec_git).with("branch -r", kind_of(String)).and_return(@correct_fb)
+        allow(@brancher).to receive(:exec_git).with("fetch", kind_of(String))
+        allow(@brancher).to receive(:exec_git).with("branch -r", kind_of(String)).and_return(@correct_fb)
       end
       subject {@brancher.list_remote_branches}
       it 'should have one correct branch in array' do
-        subject.size.should eql(1)
-        subject[0].should eql("#{$origin}/fb__#{$branch}__0")
+        expect(subject.size).to eql(1)
+        expect(subject[0]).to eql("#{$origin}/fb__#{$branch}__0")
       end
 
     end
 
     context 'a lot of incorrect remote branches' do
       before do
-        @brancher.stub(:exec_git).with("fetch", kind_of(String))
-        @brancher.stub(:exec_git).with("branch -r", kind_of(String)).and_return(@incorrect_fbs)
+        allow(@brancher).to receive(:exec_git).with("fetch", kind_of(String))
+        allow(@brancher).to receive(:exec_git).with("branch -r", kind_of(String)).and_return(@incorrect_fbs)
       end
       subject {@brancher.list_remote_branches}
       it 'should be empty' do
-        subject.should be_empty
+        expect(subject).to be_empty
       end
 
     end
 
     context '3 remote branches' do
       before do
-        @brancher.stub(:exec_git).with("fetch", kind_of(String))
-        @brancher.stub(:exec_git).with("branch -r", kind_of(String)).and_return(@three_fbs)
+        allow(@brancher).to receive(:exec_git).with("fetch", kind_of(String))
+        allow(@brancher).to receive(:exec_git).with("branch -r", kind_of(String)).and_return(@three_fbs)
       end
       subject {@brancher.list_remote_branches}
       it 'should have 3 branches in array' do
-        subject.size.should eql(3)
+        expect(subject.size).to eql(3)
       end
     end
 
@@ -110,48 +110,48 @@ BR
 
     context 'there are 3 branches' do
       before do
-        @brancher.stub(:exec_git).with("fetch", kind_of(String))
-        @brancher.stub(:exec_git).with("branch -r", kind_of(String)).and_return(@three_fbs)
+        allow(@brancher).to receive(:exec_git).with("fetch", kind_of(String))
+        allow(@brancher).to receive(:exec_git).with("branch -r", kind_of(String)).and_return(@three_fbs)
       end
       subject {@brancher.latest_remote_branch}
       it 'should give one branch with the highest number' do
-        subject.size.should eql(1)
-        subject[0].should eql("#{$origin}/fb__#{$branch}__2")
+        expect(subject.size).to eql(1)
+        expect(subject[0]).to eql("#{$origin}/fb__#{$branch}__2")
       end
     end
 
     context 'there are 3 non-consecutive branches' do
       before do
-        @brancher.stub(:exec_git).with("fetch", kind_of(String))
-        @brancher.stub(:exec_git).with("branch -r", kind_of(String)).and_return(@random_fbs)
+        allow(@brancher).to receive(:exec_git).with("fetch", kind_of(String))
+        allow(@brancher).to receive(:exec_git).with("branch -r", kind_of(String)).and_return(@random_fbs)
       end
       subject {@brancher.latest_remote_branch}
       it 'should give one branch with the highest number' do
-        subject.size.should eql(1)
-        subject[0].should eql("#{$origin}/fb__#{$branch}__156")
+        expect(subject.size).to eql(1)
+        expect(subject[0]).to eql("#{$origin}/fb__#{$branch}__156")
       end
     end
 
     context 'there is one branch' do
       before do
-        @brancher.stub(:exec_git).with("fetch", kind_of(String))
-        @brancher.stub(:exec_git).with("branch -r", kind_of(String)).and_return(@correct_fb)
+        allow(@brancher).to receive(:exec_git).with("fetch", kind_of(String))
+        allow(@brancher).to receive(:exec_git).with("branch -r", kind_of(String)).and_return(@correct_fb)
       end
       subject {@brancher.latest_remote_branch}
       it 'should give back this one branch' do
-        subject.size.should eql(1)
-        subject[0].should eql("#{$origin}/fb__#{$branch}__0")
+        expect(subject.size).to eql(1)
+        expect(subject[0]).to eql("#{$origin}/fb__#{$branch}__0")
       end
     end
 
     context 'there is no branch' do
       before do
-        @brancher.stub(:exec_git).with("fetch", kind_of(String))
-        @brancher.stub(:exec_git).with("branch -r", kind_of(String)).and_return(@incorrect_fbs)
+        allow(@brancher).to receive(:exec_git).with("fetch", kind_of(String))
+        allow(@brancher).to receive(:exec_git).with("branch -r", kind_of(String)).and_return(@incorrect_fbs)
       end
       subject {@brancher.latest_remote_branch}
       it 'should give back empty array' do
-        subject.should be_empty
+        expect(subject).to be_empty
       end
     end
 
@@ -194,37 +194,37 @@ EOS
 
     context 'all planned' do
       before do
-        @brancher.stub(:exec_git!).with("push origin feature-branch:fb__feature-branch__1 --porcelain").and_return(@new_branch)
+        allow(@brancher).to receive(:exec_git!).with("push origin feature-branch:fb__feature-branch__1 --porcelain").and_return(@new_branch)
       end
       subject {@brancher.push_branch(1)}
       it 'should return *' do
-        subject.should eql('*')
+        expect(subject).to eql('*')
       end
     end
 
     context 'is a fast-forward' do
       before do
-        @brancher.stub(:exec_git!).with("push origin feature-branch:fb__feature-branch__1 --porcelain").and_return(@fast_forward_branch)
+        allow(@brancher).to receive(:exec_git!).with("push origin feature-branch:fb__feature-branch__1 --porcelain").and_return(@fast_forward_branch)
       end
       subject {@brancher.push_branch(1)}
       it 'should return empty string' do
-        subject.should eql('')
+        expect(subject).to eql('')
       end
     end
 
     context 'is rejected' do
       before do
-        @brancher.stub(:exec_git!).with("push origin feature-branch:fb__feature-branch__1 --porcelain").and_return(@rejected_branch)
+        allow(@brancher).to receive(:exec_git!).with("push origin feature-branch:fb__feature-branch__1 --porcelain").and_return(@rejected_branch)
       end
       subject {@brancher.push_branch(1)}
       it 'should return !' do
-        subject.should eql('!')
+        expect(subject).to eql('!')
       end
     end
 
     context 'gets back broken things' do
       before do
-        @brancher.stub(:exec_git!).with("push origin feature-branch:fb__feature-branch__1 --porcelain").and_return(@broken_branch)
+        allow(@brancher).to receive(:exec_git!).with("push origin feature-branch:fb__feature-branch__1 --porcelain").and_return(@broken_branch)
       end
       it 'should raise an error' do
         expect {@brancher.push_branch(1)}.to raise_error(RuntimeError)
@@ -249,18 +249,18 @@ EOS
     end
     context 'deleted successfully' do
       before do
-        @brancher.stub(:exec_git!).with("push origin :fb__feature-branch__0 --porcelain").and_return(@deleted_branch)
+        allow(@brancher).to receive(:exec_git!).with("push origin :fb__feature-branch__0 --porcelain").and_return(@deleted_branch)
       end
       subject{@brancher.delete_branch(0)}
       it 'should return -' do
-        subject.should eql('-')
+        expect(subject).to eql('-')
       end
 
     end
 
     context 'could not delete because it does not exist' do
       before do
-        @brancher.stub(:exec_git!).with("push origin :fb__feature-branch__0 --porcelain").and_return(@deleted_broken_branch)
+        allow(@brancher).to receive(:exec_git!).with("push origin :fb__feature-branch__0 --porcelain").and_return(@deleted_broken_branch)
       end
       it 'should raise Exception' do
         expect {@brancher.delete_branch(0)}.to raise_error(DeleteBranchError)
@@ -269,8 +269,8 @@ EOS
 
     context 'could not delete because of an error' do
       before do
-        @brancher.stub(:exec_git!).with("push origin :fb__feature-branch__0 --porcelain").and_return(@deleted_branch)
-        $?.stub(:success?).and_return(false)
+        allow(@brancher).to receive(:exec_git!).with("push origin :fb__feature-branch__0 --porcelain").and_return(@deleted_branch)
+        allow($?).to receive(:success?).and_return(false)
       end
       it 'should raise Exception -> but it is basically fine' do
         expect {@brancher.delete_branch(0)}.to raise_error(DeleteBranchError)
