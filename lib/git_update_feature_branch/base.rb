@@ -1,4 +1,5 @@
 require "git_update_feature_branch/git_interface"
+require 'inifile'
 
 class Base 
 
