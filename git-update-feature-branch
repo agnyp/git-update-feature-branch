@@ -3,14 +3,14 @@
 USAGE = <<EOS
 Usage: git update-feature-branch <branch> [remote-branch]
 
-<branch>        - Mandatory. This is your local branch. 
+<branch>        - Mandatory. This is your local branch.
 [remote-branch] - Optional.  This is the remote branch on origin. If not provided this script will use "origin/branch".
                              Next version will provide the possibility to use arbitrary remotes.
 
   -h, --help     shows this information
   --continue     Continues the script after interrupting due to e.g. conflict-solving. (Also next version.)
 
-This script is idempotent. If it fails, e.g. because of conflicts, 
+This script is idempotent. If it fails, e.g. because of conflicts,
 you can simply rerun it.
 
 Using the cool rebasing with git, feature-branches in collaboration can get tricky if you want to keep your work up-to-date with master.
@@ -71,13 +71,13 @@ puts "Remote branch \'#{origin_branch}\'"
 if branch == "master"
   puts "Using master as a feature branch is not permitted!"
   exit 1
-end 
+end
 checkout_branch branch
 
 # checking for a dirty directory
 puts "Checking wc clean ..."
 out = `git status --porcelain` ; suc = $?.success?
-if out.length > 0 
+if out.length > 0
   puts "You seem to have a dirty directory. Please commit or stage your changes and start over."
   exit 1
 end unless !suc
@@ -91,7 +91,7 @@ exec_git "git pull origin master", "Could not pull master"
 checkout_branch branch
 exec_git "git rebase master", "Rebasing your bransch \'#{branch}\' with master failed. Could not update your work."
 
-# Step 2 - Updating remote feature-branch to our master 
+# Step 2 - Updating remote feature-branch to our master
 puts "Rebasing feature-branch from origin onto local master ..."
 updated_origin_branch="#{branch}_from_origin"
 exec_git "git checkout #{origin_branch}","Could not checkout #{origin_branch}"
