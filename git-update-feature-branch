@@ -3,7 +3,7 @@
 USAGE = <<EOS
 Usage: git update-feature-branch <branch> [remote-branch]
 
-<branch>        - Mandatory. This is your local branch.
+<branch> or {.} - Mandatory. This is your local branch. A dot ('.') will use HEAD.
 [remote-branch] - Optional.  This is the remote branch on origin. If not provided this script will use "origin/branch".
                              Next version will provide the possibility to use arbitrary remotes.
 
@@ -53,11 +53,12 @@ end
 
 ARGV.each { |a| abort "Error: unknown argument #{a}." if a =~ /^--/ }
 
-branch = nil
+branch = `git symbolic-ref HEAD 2> /dev/null`.strip.gsub(/^refs\/heads\//, '')
 origin_branch=nil
-ARGV.each_with_index { |a, i| 
-  if i == 0
-    branch=a 
+
+ARGV.each_with_index { |a, i|
+  if i == 0 && a != '.'
+    branch=a
   end
     origin_branch="origin/#{branch}"
   if i == 1
